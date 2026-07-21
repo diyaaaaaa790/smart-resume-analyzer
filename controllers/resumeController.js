@@ -1,17 +1,124 @@
-// Basic controller placeholder for resume processing
+const Resume = require("../models/Resume");
 
-exports.analyze = (req, res) => {
-  // Placeholder: accept resume text and return mock analysis
-  const { text } = req.body;
-  if (!text) return res.status(400).json({ error: 'No resume text provided' });
+// Create Resume
+const createResume = async (req, res) => {
+  try {
+    const { title, skills, education, experience, resumeText } = req.body;
 
-  // Very simple keyword-based mock analysis
-  const skills = [];
-  const keywords = ['javascript', 'node', 'python', 'java', 'sql', 'react', 'aws'];
-  const lower = text.toLowerCase();
-  keywords.forEach(k => {
-    if (lower.includes(k)) skills.push(k);
-  });
+    const resume = await Resume.create({
+      user: req.user._id,
+      title,
+      skills,
+      education,
+      experience,
+      resumeText,
+    });
 
-  res.json({ summary: 'Mock analysis complete', skills });
+    res.status(201).json({
+      success: true,
+      data: resume,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// Get My Resumes
+const getResumes = async (req, res) => {
+  try {
+    const resumes = await Resume.find({
+      user: req.user._id,
+    });
+
+    res.json({
+      success: true,
+      count: resumes.length,
+      data: resumes,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// Update Resume
+const updateResume = async (req, res) => {
+  try {
+    const resume = await Resume.findById(req.params.id);
+
+    if (!resume) {
+      return res.status(404).json({
+        success: false,
+        message: "Resume not found",
+      });
+    }
+
+    if (resume.user.toString() !== req.user._id.toString()) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    const updatedResume = await Resume.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+
+    res.json({
+      success: true,
+      data: updatedResume,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// Delete Resume
+const deleteResume = async (req, res) => {
+  try {
+    const resume = await Resume.findById(req.params.id);
+
+    if (!resume) {
+      return res.status(404).json({
+        success: false,
+        message: "Resume not found",
+      });
+    }
+
+    if (resume.user.toString() !== req.user._id.toString()) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    await resume.deleteOne();
+
+    res.json({
+      success: true,
+      message: "Resume deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+module.exports = {
+  createResume,
+  getResumes,
+  updateResume,
+  deleteResume,
 };

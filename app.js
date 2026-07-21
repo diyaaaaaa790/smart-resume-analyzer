@@ -3,7 +3,7 @@ const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const compression = require("compression");
-
+const resumeRoutes = require("./routes/resumeRoutes");
 const authRoutes = require("./routes/authRoutes");
 
 const app = express();
@@ -13,6 +13,7 @@ app.use(helmet());
 app.use(morgan("dev"));
 app.use(compression());
 app.use(express.json());
+app.use("/api/resume", resumeRoutes);
 
 app.get("/", (req, res) => {
   res.json({
