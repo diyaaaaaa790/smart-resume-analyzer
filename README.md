@@ -209,7 +209,8 @@ education
 experience
 createdAt
 
-
+### BACKEND DEPLOYEMENT- https://smart-resume-analyzer-964a.onrender.com
+###FRONTEND DEPLOYEMENT- smart-resume-analyzer-a51a.vercel.app
 JOB
 ---
 _id PK
