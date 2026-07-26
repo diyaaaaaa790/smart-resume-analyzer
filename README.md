@@ -157,3 +157,64 @@ smart-resume-analyzer/
 │   └── package.json
 │
 └── README.md
+ # Architecture diagram
+
+                   USER
+                    │
+                    ▼
+            React Frontend
+                    │
+                 Axios
+                    │
+                    ▼
+             Express REST API
+                    │
+       ┌────────────┼────────────┐
+       │            │            │
+       ▼            ▼            ▼
+ Authentication   Resume       Jobs
+   Middleware    Controller   Controller
+       │            │            │
+       └────────────┼────────────┘
+                    │
+                    ▼
+                MongoDB
+                    │
+                    ▼
+             AI Analysis API
+
+DSA Support:
+Java Trie → Skill Search
+Java Graph → Job Matching
+
+#ER diagram
+
+USER
+----
+_id PK
+name
+email
+password
+createdAt
+
+
+RESUME
+------
+_id PK
+user FK
+title
+resumeText
+skills[]
+education
+experience
+createdAt
+
+
+JOB
+---
+_id PK
+title
+company
+description
+skills[]
+location
